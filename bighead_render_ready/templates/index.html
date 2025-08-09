@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BIG Head</title>
+</head>
+<body>
+    <h1>BIG Head 🤖</h1>
+    <label>Language:
+        <select id="language">
+            <option value="en">English</option>
+            <option value="bn">Bangla</option>
+            <option value="hi">Hindi</option>
+        </select>
+    </label>
+    <div>
+        <textarea id="message" placeholder="Type your question..."></textarea>
+        <button onclick="sendMessage()">Ask</button>
+    </div>
+    <div id="response"></div>
+
+    <script>
+    async function sendMessage() {
+        const lang = document.getElementById("language").value;
+        const msg = document.getElementById("message").value;
+        const responseDiv = document.getElementById("response");
+        responseDiv.innerHTML = "Thinking...";
+
+        const res = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg + " (Language: " + lang + ")" })
+        });
+        const data = await res.json();
+        if (data.answer) {
+            responseDiv.innerHTML = data.answer;
+        } else {
+            responseDiv.innerHTML = "Error: " + data.error;
+        }
+    }
+    </script>
+</body>
+</html>
